@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+   integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+   crossorigin=""/>
+   <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+   integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+   crossorigin=""></script>
+    <title>Ngawal Korona</title>
+    <style>
+        
+        html {
+            background-color: #f5f5f5;
+            scroll-behavior: smooth;
+        }
+        .card-panel {
+            height: 200px;
+        }
+
+        .card-head {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .card-detail {
+            margin: 0;
+        }
+
+        .card-content {
+            margin: 0;
+        }
+
+        .tableFixHead          { overflow-y: auto; height: 400px; }
+        .tableFixHead thead th { position: sticky; top: 0; }
+
+        /* Just common table stuff. Really. */
+        table  { border-collapse: collapse; width: 100%; }
+        th, td { padding: 8px 16px; }
+        th     { background:#eee; height: 60px;}
+        /* For mobile */
+        @media only screen and (max-width: 768px) {
+            .card-panel {
+                height: 150px;
+            }
+        }
+
+        @media only screen and (max-width: 993px) {
+            .card-panel {
+                height: 250px;
+            }
+
+            .responsive-img {
+              width: 60%;
+            }
+        }
+
+        @media only screen and (max-width: 640px) {
+            .card-panel {
+                height: 150px;
+            }
+        }
+    </style>
+  </head>
+
+  <body>
+      <div id="app">
+        <nav color="cyan lighten-1">
+            <div class="nav-wrapper container" >
+              <a href="#" class="brand-logo">Ngawal Korona</a>
+              <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+              <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#indonesia">Data Sak Indonesia</a></li>
+                <li><a href="#">Data Per Provinsi</a></li>
+                <li><a href="#global">Data Sak Ndonyo</a></li>
+              </ul>
+            </div>
+          </nav>
+          <ul class="sidenav" id="mobile-demo">
+            <li><a class="sidenav-close" href="#home">Home</a></li>
+            <li><a class="sidenav-close" href="#indonesia">Data Sak Indonesia</a></li>
+            <li><a class="sidenav-close" href="#">Data Per Provinsi</a></li>
+            <li><a class="sidenav-close" href="#global">Data Sak Ndonyo</a></li>
+          </ul>
+          <div class="container">
+              <div id="home">
+                  <div class="judul" style="padding-bottom: 10px;">
+                    <h3 class="center-align">NGAWASI KORONA BARENG-BARENG</h2>
+                    <h6 class="center-align">Ngawasi dewe ben gak diapusi wong</h4>
+                  </div>
+                  <hr>
+                  <div id="global" class="data-global" style="padding-top: 20px;">
+                      <div class="row" style="padding-bottom: 0;">
+                        <div>
+                            <h4>Sak Ndonyo</h5>
+                        </div>
+                        <div style="width: 250px;
+                        margin-top: -53px;
+                        padding-left: 200px;" >
+                            <img class="responsive-img z-depth-5 circle " src="https://image.flaticon.com/icons/svg/814/814513.svg" alt="https://www.flaticon.com/free-icon/worldwide_814513?term=earth&page=1&position=7">
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col s12 m12 l6 xl4">
+                            <div class="card-panel yellow">
+                                <div class="col s6 white-text">
+                                    <p class="card-head">Positif</p>
+                                    <h4 v-if="global.positif" class="card-content">{{global.positif.toLocaleString('id')}}</h4>
+                                    <div v-else class="preloader-wrapper big active">
+                                        <div class="spinner-layer spinner-blue-only">
+                                          <div class="circle-clipper left">
+                                            <div class="circle"></div>
+                                          </div><div class="gap-patch">
+                                            <div class="circle"></div>
+                                          </div><div class="circle-clipper right">
+                                            <div class="circle"></div>
+                                          </div>
+                                        </div>
+                                    </div>
+                                    <p class="card-detail">menungsho</p>
+                                </div>
+                                <div class="col s6">
+                                    <img class="responsive-img" src="https://image.flaticon.com/icons/svg/2307/2307709.svg" alt="https://www.flaticon.com/free-icon/crying_2307745?term=emoticon%20face%20cry&page=1&position=2">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s12 m12 l6 xl4">
+                            <div class="card-panel green accent-3">
+                                <div class="col s6 white-text">
+                                    <p class="card-head">Mari</p>
+                                    <h4 v-if="global.sembuh" class="card-content">{{global.sembuh.toLocaleString('id')}}</h4>
+                                    <div v-else class="preloader-wrapper big active">
+                                        <div class="spinner-layer spinner-blue-only">
+                                          <div class="circle-clipper left">
+                                            <div class="circle"></div>
+                                          </div><div class="gap-patch">
+                                            <div class="circle"></div>
+                                          </div><div class="circle-clipper right">
+                                            <div class="circle"></div>
+                                          </div>
+                                        </div>
+                                    </div>
+                                    <p class="card-detail">menungsho</p>
+                                </div>
+                                <div class="col s6">
+                                    <img class="responsive-img" src="https://image.flaticon.com/icons/svg/2307/2307756.svg" alt="https://www.flaticon.com/free-icon/smiling-face_2307756?term=emoticon%20face%20smile&page=1&position=5">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s12 m12 l6 xl4">
+                            <div class="card-panel red darken-2">
+                                <div class="col s6 white-text">
+                                    <p class="card-head">Sedho</p>
+                                    <h4 v-if="global.meninggal" class="card-content">{{global.meninggal.toLocaleString('id')}}</h4>
+                                    <div v-else class="preloader-wrapper big active">
+                                        <div class="spinner-layer spinner-blue-only">
+                                          <div class="circle-clipper left">
+                                            <div class="circle"></div>
+                                          </div><div class="gap-patch">
+                                            <div class="circle"></div>
+                                          </div><div class="circle-clipper right">
+                                            <div class="circle"></div>
+                                          </div>
+                                        </div>
+                                    </div>
+                                    <p class="card-detail">menungsho</p>
+                                </div>
+                                <div class="col s6">
+                                    <img class="responsive-img" src="https://image.flaticon.com/icons/svg/2307/2307745.svg" alt="https://www.flaticon.com/free-icon/crying_2307745?term=emoticon%20face%20cry&page=1&position=2">
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                  </div>
+                  <div id="mapid" style="height: 450px;"></div>
+                  <div id="global-detail">
+                    <div class="card">
+                      <div class="tableFixHead">
+                        <table id="example" class="display" style="width:100%">
+                          <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Negoro</th>
+                                <!-- <th>Update Terakhir</th> -->
+                                <th>Terkonfirmasi</th>
+                                <th>Sedho</th>
+                                <th>Mari</th>
+                                <th>Positif</th>
+                            </tr>
+                          </thead>
+                  
+                          <tbody>
+                            <tr v-for="(globe,i) in dataGlobal" :key="i">
+                              <td>{{i+1}}</td>
+                              <td>{{globe.attributes.Country_Region}}</td>
+                              <!-- <td>{{toDate(globe.attributes.Last_Update)}}</td> -->
+                              <td align="right">{{globe.attributes.Confirmed.toLocaleString('id')}}</td>
+                              <td align="right">{{globe.attributes.Deaths.toLocaleString('id')}}</td>
+                              <td align="right">{{globe.attributes.Recovered.toLocaleString('id')}}</td>
+                              <td align="right">{{globe.attributes.Active.toLocaleString('id')}}</td>
+                           </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      
+                    </div>
+                  </div>
+                  <div id="indonesia" class="data-global" style="padding-top: 20px;">
+                    <div class="row" style="padding-bottom: 0;">
+                      <div>
+                          <h4>Sak Indonesia</h5>
+                      </div>
+                      <div style="width: 270px;
+                      margin-top: -53px;
+                      padding-left: 220px;" >
+                          <img class="responsive-img z-depth-5 circle " src="https://image.flaticon.com/icons/svg/323/323372.svg" alt="https://www.flaticon.com/free-icon/indonesia_323372?term=nation%20flag%20indonesia&page=1&position=1">
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col s12 m12 l6 xl4">
+                          <div class="card-panel yellow">
+                              <div class="col s6 white-text">
+                                  <p class="card-head">Positif</p>
+                                  <h4 v-if="indonesia.positif" class="card-content">{{indonesia.positif.toLocaleString('id')}}</h4>
+                                  <div v-else class="preloader-wrapper big active">
+                                    <div class="spinner-layer spinner-blue-only">
+                                      <div class="circle-clipper left">
+                                        <div class="circle"></div>
+                                      </div><div class="gap-patch">
+                                        <div class="circle"></div>
+                                      </div><div class="circle-clipper right">
+                                        <div class="circle"></div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <p class="card-detail">menungsho</p>
+                              </div>
+                              <div class="col s6">
+                                  <img class="responsive-img" src="https://image.flaticon.com/icons/svg/2307/2307709.svg" alt="https://www.flaticon.com/free-icon/crying_2307745?term=emoticon%20face%20cry&page=1&position=2">
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col s12 m12 l6 xl4">
+                          <div class="card-panel green accent-3">
+                              <div class="col s6 white-text">
+                                  <p class="card-head">Mari</p>
+                                  <h4 v-if="indonesia.sembuh" class="card-content">{{indonesia.sembuh.toLocaleString('id')}}</h4>
+                                  <div v-else class="preloader-wrapper big active">
+                                    <div class="spinner-layer spinner-blue-only">
+                                      <div class="circle-clipper left">
+                                        <div class="circle"></div>
+                                      </div><div class="gap-patch">
+                                        <div class="circle"></div>
+                                      </div><div class="circle-clipper right">
+                                        <div class="circle"></div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <p class="card-detail">menungsho</p>
+                              </div>
+                              <div class="col s6">
+                                  <img class="responsive-img" src="https://image.flaticon.com/icons/svg/2307/2307756.svg" alt="https://www.flaticon.com/free-icon/smiling-face_2307756?term=emoticon%20face%20smile&page=1&position=5">
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col s12 m12 l6 xl4">
+                          <div class="card-panel red darken-2">
+                              <div class="col s6 white-text">
+                                  <p class="card-head">Sedho</p>
+                                  <h4 v-if="indonesia.meninggal" class="card-content">{{indonesia.meninggal.toLocaleString('id')}}</h4>
+                                  <div v-else class="preloader-wrapper big active">
+                                    <div class="spinner-layer spinner-blue-only">
+                                      <div class="circle-clipper left">
+                                        <div class="circle"></div>
+                                      </div><div class="gap-patch">
+                                        <div class="circle"></div>
+                                      </div><div class="circle-clipper right">
+                                        <div class="circle"></div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <p class="card-detail">menungsho</p>
+                              </div>
+                              <div class="col s6">
+                                  <img class="responsive-img" src="https://image.flaticon.com/icons/svg/2307/2307745.svg" alt="https://www.flaticon.com/free-icon/crying_2307745?term=emoticon%20face%20cry&page=1&position=2">
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+                </div>
+              </div>
+              <div id="provinsi">
+                <div class="data-global" style="padding-top: 20px;">
+                    <div class="row" style="padding-bottom: 0;">
+                      <div>
+                          <h4>Per Propinsi</h5>
+                      </div>
+                      <div style="width: 280px;
+                      margin-top: -60px;
+                      padding-left: 220px;" >
+                          <img class="responsive-img z-depth-5 circle " src="https://image.flaticon.com/icons/svg/1782/1782793.svg" alt="https://www.flaticon.com/free-icon/pin_1782793?term=maps&page=1&position=23">
+                      </div>
+                    </div>
+                    <div class="row" style="padding-bottom: 0;">
+                        <div class="col s12">
+                            <div class="input-field col s12">
+                                <i class="material-icons prefix">map</i>
+                                <input type="text" id="autocomplete-input" v-model="propinsiku" :value="propinsiku" class="autocomplete">
+                                <label for="autocomplete-input">Jeneng Propinsi</label>
+                              </div>
+                        </div>
+                    </div>
+                    <h4>{{propinsiku}}</h4>
+                    <div class="row">
+                      <div class="col s12 m12 l6 xl4">
+                        <div class="card-panel yellow">
+                            <div class="col s6 white-text">
+                                <p class="card-head">Positif</p>
+                                <h4 v-if="indonesia.positif" class="card-content">{{dataPropinsiku.Kasus_Posi.toLocaleString('id')}}</h4>
+                                <div v-else class="preloader-wrapper big active">
+                                  <div class="spinner-layer spinner-blue-only">
+                                    <div class="circle-clipper left">
+                                      <div class="circle"></div>
+                                    </div><div class="gap-patch">
+                                      <div class="circle"></div>
+                                    </div><div class="circle-clipper right">
+                                      <div class="circle"></div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <p class="card-detail">menungsho</p>
+                            </div>
+                            <div class="col s6">
+                                <img class="responsive-img" src="https://image.flaticon.com/icons/svg/2307/2307709.svg" alt="https://www.flaticon.com/free-icon/crying_2307745?term=emoticon%20face%20cry&page=1&position=2">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col s12 m12 l6 xl4">
+                        <div class="card-panel green accent-3">
+                            <div class="col s6 white-text">
+                                <p class="card-head">Mari</p>
+                                <h4 v-if="indonesia.sembuh" class="card-content">{{dataPropinsiku.Kasus_Semb.toLocaleString('id')}}</h4>
+                                <div v-else class="preloader-wrapper big active">
+                                  <div class="spinner-layer spinner-blue-only">
+                                    <div class="circle-clipper left">
+                                      <div class="circle"></div>
+                                    </div><div class="gap-patch">
+                                      <div class="circle"></div>
+                                    </div><div class="circle-clipper right">
+                                      <div class="circle"></div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <p class="card-detail">menungsho</p>
+                            </div>
+                            <div class="col s6">
+                                <img class="responsive-img" src="https://image.flaticon.com/icons/svg/2307/2307756.svg" alt="https://www.flaticon.com/free-icon/smiling-face_2307756?term=emoticon%20face%20smile&page=1&position=5">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col s12 m12 l6 xl4">
+                        <div class="card-panel red darken-2">
+                            <div class="col s6 white-text">
+                                <p class="card-head">Sedho</p>
+                                <h4 v-if="indonesia.meninggal" class="card-content">{{dataPropinsiku.Kasus_Meni.toLocaleString('id')}}</h4>
+                                <div v-else class="preloader-wrapper big active">
+                                  <div class="spinner-layer spinner-blue-only">
+                                    <div class="circle-clipper left">
+                                      <div class="circle"></div>
+                                    </div><div class="gap-patch">
+                                      <div class="circle"></div>
+                                    </div><div class="circle-clipper right">
+                                      <div class="circle"></div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <p class="card-detail">menungsho</p>
+                            </div>
+                            <div class="col s6">
+                                <img class="responsive-img" src="https://image.flaticon.com/icons/svg/2307/2307745.svg" alt="https://www.flaticon.com/free-icon/crying_2307745?term=emoticon%20face%20cry&page=1&position=2">
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+              </div>
+              <h4>Datane Sak Propinsi</h4>
+              <div id="propinsi-detail">
+                <div class="card">
+                  <div class="tableFixHead">
+                    <table id="example" class="display" style="width:100%">
+                      <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Negoro</th>
+                            <!-- <th>Update Terakhir</th> -->
+                            <!-- <th>Terkonfirmasi</th> -->
+                            <th>Sedho</th>
+                            <th>Mari</th>
+                            <th>Positif</th>
+                        </tr>
+                      </thead>
+              
+                      <tbody>
+                        <tr v-for="(prop,i) in propinsi" :key="i">
+                          <td>{{i+1}}</td>
+                          <td>{{prop.attributes.Provinsi}}</td>
+                          <!-- <td>{{toDate(globe.attributes.Last_Update)}}</td> -->
+                          <!-- <td align="right">{{prop.attributes.Confirmed.toLocaleString('id')}}</td> -->
+                          <td align="right">{{prop.attributes.Kasus_Meni.toLocaleString('id')}}</td>
+                          <td align="right">{{prop.attributes.Kasus_Semb.toLocaleString('id')}}</td>
+                          <td align="right">{{prop.attributes.Kasus_Posi.toLocaleString('id')}}</td>
+                       </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  
+                </div>
+              </div>
+              <h4>Datane Per Kasus</h4>
+              <div id="propinsi-detail">
+                <div class="card">
+                  <div class="tableFixHead">
+                    <table id="example" class="display" style="width:100%">
+                      <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Wilayah</th>
+                            <th>Kelamin</th>
+                            <th>Umur</th>
+                            <th>Warga Negara</th>
+                            <th>Status</th>
+                        </tr>
+                      </thead>
+              
+                      <tbody>
+                        <tr v-for="(kasus,i) in perkasus" :key="i">
+                          <td>{{kasus.id}}</td>
+                          <td>{{kasus.klaster}}</td>
+                          <td>
+                            <img v-if="kasus.genderid" width="10%" class="responsive-img" src="https://image.flaticon.com/icons/svg/145/145867.svg" alt="https://www.flaticon.com/free-icon/boy_145867">
+                            <img v-else class="responsive-img" width="10%" src="https://image.flaticon.com/icons/svg/145/145862.svg" alt="https://www.flaticon.com/free-icon/girl_145862">
+                          </td>
+                          <td align="right">{{kasus.umur}}</td>
+                          <td align="right">{{kasus.wn}}</td>
+                          <td align="right">
+                            <span v-if="kasus.statusid === 0" class="new badge red white-text" :data-badge-caption="kasus.status"></span>
+                            <span v-if="kasus.statusid === 1" class="new badge green white-text" :data-badge-caption="kasus.status"></span>
+                            <span v-if="kasus.statusid === 2" class="new badge yellow white-text" :data-badge-caption="kasus.status"></span>
+                          </td>
+                       </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="modal-content" style="padding-bottom: 20px;">
+                <div class="carousel carousel-slider">
+                  <a class="carousel-item" href="https://asset.kompas.com/data/photo/2020/03/16/5e6ef0057c9c1.jpg" target="_blank"><img src="https://asset.kompas.com/data/photo/2020/03/16/5e6ef0057c9c1.jpg"></a>
+                  <a class="carousel-item" href="https://www.pantau.com/topic/infografis/infografis-10-langkah-mencuci-tangan-yang-dianjurkan-who" target="_blank"><img src="https://www.pantau.com/uploads/news/content/1583758500-993478804.png"></a>
+                  <a class="carousel-item" href="https://smol.id/wp-content/uploads/2020/01/18112ab4-9fbd-4160-b546-64cc7029eb39.jpeg" target="_blank"><img src="https://smol.id/wp-content/uploads/2020/01/18112ab4-9fbd-4160-b546-64cc7029eb39.jpeg"></a>
+                  <a class="carousel-item" href="https://www.suarasurabaya.net/info-grafis/2020/yuk-cegah-virus-corona/" target="_blank"><img src="https://www.suarasurabaya.net/wp-content/uploads/2020/03/INFOGRAFIS-CORONA-03-840x493.jpg"></a>
+                </div>
+              </div>
+          </div>
+          <div id="footer">
+            <footer class="page-footer">
+                <div class="container">
+                  <div class="row">
+                    <div class="col l6 s12">
+                      <h5 class="white-text">Ngawal Korona</h5>
+                      <p class="grey-text text-lighten-4">Ayok update terus info Korona, ben ngerti koyok pye penyebarane.</p>
+                      <p class="grey-text text-lighten-4">Ayok, ojo dolan ae. luwih apik nang omah saiki, kanggo mbatasi nyebare Virus Korona. ojo kokehan dolan ae Cah!</p>
+                    </div>
+                    <div class="col l4 offset-l2 s12">
+                      <h5 class="white-text">Sumber</h5>
+                      <ul>
+                        <li>API Kawal Korona <a class="grey-text text-lighten-3" href="https://kawalcorona.com/">https://kawalcorona.com/</a></li>
+                        <!-- <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
+                        <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
+                        <li><a class="grey-text text-lighten-3" href="#!">Link 4</a></li> -->
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="footer-copyright">
+                  <div class="container">
+                  © 2020 Copyright @CahBagus
+                  <!-- <a class="grey-text text-lighten-4 right" href="#!">More Links</a> -->
+                  </div>
+                </div>
+              </footer>
+          </div>
+      </div>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+
+        const coronaVm = new Vue({
+            el: '#app',
+            data: { 
+                display: 'redbox' ,
+                global: {
+                    positif: 0,
+                    sembuh: 0,
+                    meninggal: 0,
+                },
+                indonesia: {
+                    positif: 0,
+                    sembuh: 0,
+                    meninggal: 0
+                },
+                propinsi: null,
+                dataGlobal: null,
+                propinsiku: 'Jawa Tengah',
+                nama_propinsi: {},
+                dataPropinsiku: {
+                  Kasus_Posi: 0,
+                  Kasus_Semb: 0,
+                  Kasus_Meni: 0
+                },
+                map: null,
+                tileLayer: null,
+                layers: [],
+                perkasus: {}
+            },
+            mounted() {
+              this.initMap();
+              this.initLayers();
+            },
+            created () {
+                this.onload()
+                setInterval(() => {
+                    this.onload()
+                }, 30 * 60 * 1000);
+                setTimeout(() => {
+                  this.change(this.propinsiku)
+                }, 2000);
+            },
+            methods: {
+                initMap(){
+                  let lat = '-2.548926'
+                  let lng = '118.0148634'
+                  this.map = L.map('mapid').setView([lat, lng], 4);
+                  const that = this
+                  if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position){
+                      lat = position.coords.latitude
+                      lng = position.coords.longitude
+                      var myIcon = L.icon({
+                        iconUrl: 'https://image.flaticon.com/icons/svg/2617/2617861.svg',
+                        iconSize: [38, 95],
+                        iconAnchor: [22, 94],
+                        popupAnchor: [-3, -76]
+                    });
+                      var marker = L.marker([lat, lng],{icon: myIcon}).addTo(that.map);
+                      marker.bindPopup("<b>Hallo Cah!</b><br>Awakmu nang kene").openPopup()
+                      marker.on('mouseover', function (e) {
+                        this.openPopup();
+                      });
+                      marker.on('mouseout', function (e) {
+                          this.closePopup();
+                      });
+                      // that.map.flyTo([lat, lng], 12)
+                    });
+                  } else {
+                    alert("Geolocation is not supported by this browser.");
+                  }        
+                },
+                initLayers(){
+                  this.tileLayer = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                      maxZoom: 18,
+                      id: 'mapbox/streets-v11',
+                      tileSize: 512,
+                      zoomOffset: -1,
+                      accessToken: 'pk.eyJ1IjoidmFpbG80MTM1IiwiYSI6ImNrODc2MXlsaDBsa2Uzbm1ybWM0eDNrNm8ifQ.iK8rImtxxad-agBgbpYtyA'
+                  })
+                  this.tileLayer.addTo(this.map );
+                },
+                addToMap(){
+                  const that = this
+                  this.dataGlobal.forEach(function(el){
+                    var marker = L.marker([el.attributes.Lat, el.attributes.Long_]).addTo(that.map);
+                    marker.bindPopup("<b>"+el.attributes.Country_Region+"</b><br>Ketemu : <b>"+el.attributes.Confirmed+"</b><br>Sedho : <b>"+el.attributes.Deaths+"</b><br>Mari : <b>"+el.attributes.Recovered+"</b><br>Positif : <b>"+el.attributes.Active+"</b><br>")
+                    marker.bindTooltip("<b>"+el.attributes.Country_Region+"</b>").openTooltip();
+                    marker.on('mouseover', function (e) {
+                        this.openPopup();
+                    });
+                    marker.on('mouseout', function (e) {
+                        this.closePopup();
+                        this.openTooltip();
+                    });
+                  })
+                },
+                toDate(dateUnix) {
+                  return new Date(dateUnix * 1000)
+                },
+                onload () {
+                    this.getIndonesia()
+                    this.getPropinsi()
+                    this.getGlobal()
+                    this.getGlobalPositif()
+                    this.getGlobalSembuh()
+                    this.getGlobalMeninggal()
+                    this.getPerKasus()
+                },
+                getIndonesia () {
+                    axios.get('https://api.kawalcorona.com/indonesia/')
+                        .then((res) => {
+                            // console.log('Indonesia axios', res)
+                            this.indonesia = res.data[0]
+                            console.log(this.indonesia)
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                        })
+                },
+                getPropinsi () {
+                    axios.get('https://api.kawalcorona.com/indonesia/provinsi/')
+                        .then((res) => {
+                            console.log('Propinsi', res)
+                            this.propinsi = res.data
+                            let i = 1
+                            let total = this.propinsi.length
+                            let object = null
+                            this.propinsi.forEach(element => {
+                              this.nama_propinsi[element.attributes.Provinsi] = null
+                            })
+                            console.log(this.nama_propinsi)
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                        })
+                },
+                getGlobal () {
+                    axios.get('https://api.kawalcorona.com/')
+                        .then((res) => {
+                            console.log('Global', res)
+                            this.dataGlobal = res.data
+                            this.addToMap()
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                        })
+                },
+                getGlobalPositif () {
+                    axios.get('https://api.kawalcorona.com/positif/')
+                        .then((res) => {
+                            console.log('Global Positif', res)
+                            this.global.positif = res.data.value
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                        })
+                },
+                getGlobalSembuh () {
+                    axios.get('https://api.kawalcorona.com/sembuh/')
+                        .then((res) => {
+                            console.log('Global Sembuh', res)
+                            this.global.sembuh = res.data.value
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                        })
+                },
+                getGlobalMeninggal () {
+                    axios.get('https://api.kawalcorona.com/meninggal/')
+                        .then((res) => {
+                            console.log('Global Meninggal', res)
+                            this.global.meninggal = res.data.value
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                        })
+                },
+                getPerKasus () {
+                  // https://indonesia-covid-19.mathdro.id/api/kasus
+                  axios.get('https://indonesia-covid-19.mathdro.id/api/kasus/')
+                        .then((res) => {
+                            console.log('Indonesia Perkasus', res)
+                            this.perkasus = res.data.data.nodes
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                        })
+                },
+                change(val) {
+                  this.propinsiku = val
+                  var propinsiFiltered =  this.propinsi.filter(function(el) {
+                    return el.attributes.Provinsi === val;
+                  });
+                  this.dataPropinsiku = propinsiFiltered[0].attributes
+                  console.log(this.dataPropinsiku)
+                }
+            }
+        });
+
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            var autocompleteelems = document.querySelectorAll('.autocomplete');
+            var autocomplete = M.Autocomplete.init(autocompleteelems, {
+                data: coronaVm.$data.nama_propinsi,
+                onAutocomplete: function(txt) {
+                  coronaVm.change(txt)
+                },
+            });
+            var sidenavelems = document.querySelectorAll('.sidenav');
+            var sidenav = M.Sidenav.init(sidenavelems, {});
+
+            var carouselelems = document.querySelector('.carousel');
+            var carousel = M.Carousel.init(carouselelems, {
+              duration: 200,
+              fullWidth: true,
+              padding: 10
+            });
+        });
+
+        // var mymap = L.map('mapid').setView([51.505, -0.09], 13)
+        // L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+        //     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        //     maxZoom: 18,
+        //     id: 'mapbox/streets-v11',
+        //     tileSize: 512,
+        //     zoomOffset: -1,
+        //     accessToken: 'pk.eyJ1IjoidmFpbG80MTM1IiwiYSI6ImNrODc2MXlsaDBsa2Uzbm1ybWM0eDNrNm8ifQ.iK8rImtxxad-agBgbpYtyA'
+        // }).addTo(mymap);
+
+        // //add marker to map
+        // coronaVm.$data.dataGlobal.forEach(function(el){
+        //   console.log(el)
+        // })
+    </script>
+  </body>
+</html>
+      
